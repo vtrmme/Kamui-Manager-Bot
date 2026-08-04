@@ -10,9 +10,6 @@ const {
   ButtonBuilder,
   ButtonStyle,
   StringSelectMenuBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
   ChannelType
 } = require('discord.js');
 const express = require('express');
@@ -38,19 +35,19 @@ const client = new Client({
   ],
 });
 
+// EMOJIS PERSONALIZADOS CON SUS IDs REALES
+const EMOJI_CORAZON = '<:pixel_corazon:1534147758859096084>';
+const EMOJI_NO_SPAM = '<:pixel_no_spam:1534147658938056724>';
+const EMOJI_CANALES = '<:pixel_canales:1534147507049726014>';
+const EMOJI_SEGURIDAD = '<:pixel_seguridad:1534147571210260540>';
+const EMOJI_PUERTA = '<:pixel_puerta:1534150014979543061>';
+
 // Constantes de IDs de GAMEX COMMUNITY
 const RULES_CHANNEL_ID = '1533949201048797238';
 const WELCOME_CHANNEL_ID = '1533950487919858026';
 const VOICE_CREATOR_ID = '1534133390867955823';
 const VOICE_CATEGORY_ID = '1534133235120869416';
 const TICKET_PANEL_CHANNEL_ID = '1534133531876528219';
-
-// ⚠️ REEMPLAZA LOS CÓDIGOS DE ABAJO CON TUS EMOJIS CON ID (Ejemplo: '<:pixel_corazon:123456789012345678>')
-const EMOJI_CORAZON = '<:pixel_corazon:1534147758859096084>';
-const EMOJI_NO_SPAM = '<:pixel_no_spam:1534147658938056724>';
-const EMOJI_CANALES = '<:pixel_canales:1534147507049726014>';
-const EMOJI_SEGURIDAD = '<:pixel_seguridad:1534147571210260540>';
-const EMOJI_PUERTA = '<:pixel_puerta:1534150014979543061>';
 
 // Registro de canales de voz temporales
 const tempChannels = new Map();
@@ -80,7 +77,7 @@ client.once('ready', async () => {
     console.error('Error al registrar comandos:', err);
   }
 
-  // Desplegar paneles si no existen
+  // Desplegar paneles en Discord
   await setupRulesPanel();
   await setupTicketPanel();
 });
@@ -195,8 +192,9 @@ client.on('guildMemberAdd', async (member) => {
   await channel.send({ content: `👋 ¡Dadle una gran bienvenida a ${member}!`, embeds: [embedBienvenida] });
 });
 
-// --- CANALES DE VOZ TEMPORALES ---
+// --- CANALES DE VOZ TEMPORALES (MODO SENCILLO) ---
 client.on('voiceStateUpdate', async (oldState, newState) => {
+  // Al entrar al canal creador de voz
   if (newState.channelId === VOICE_CREATOR_ID) {
     const guild = newState.guild;
     const member = newState.member;
@@ -211,26 +209,12 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
       tempChannels.set(newChannel.id, member.id);
       await member.voice.setChannel(newChannel);
-
-      const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId('configurar_temp_voice')
-          .setLabel('⚙️ Personalizar canal')
-          .setStyle(ButtonStyle.Primary)
-      );
-
-      const embed = new EmbedBuilder()
-        .setColor('#5865F2')
-        .setTitle('🎮 ¡Canal Temporal Creado!')
-        .setDescription('Pulsa el botón de abajo para cambiar el nombre y el límite de personas (máx. 100).')
-        .setFooter({ text: 'gαмєх 🅱🅾🆃 • Se eliminará solo al quedar vacío.' });
-
-      await newChannel.send({ embeds: [embed], components: [row] });
     } catch (err) {
-      console.error('Error en canal de voz:', err);
+      console.error('Error al crear canal de voz:', err);
     }
   }
 
+  // Eliminar canal cuando se quede vacío
   if (oldState.channelId && tempChannels.has(oldState.channelId)) {
     const oldChannel = oldState.guild.channels.cache.get(oldState.channelId);
     if (oldChannel && oldChannel.members.size === 0) {
@@ -240,9 +224,10 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
   }
 });
 
-// --- INTERACCIONES ---
+// --- INTERACCIONES (TICKETS Y COMANDOS) ---
 client.on('interactionCreate', async (interaction) => {
   
+  // 1. SELECCIÓN DE TICKET
   if (interaction.isStringSelectMenu() && interaction.customId === 'menu_tickets') {
     const tipo = interaction.values[0];
     const guild = interaction.guild;
@@ -304,6 +289,7 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
+  // 2. CERRAR TICKET
   if (interaction.isButton() && interaction.customId === 'cerrar_ticket') {
     await interaction.reply('🔒 El ticket se cerrará y eliminará en **5 segundos**...');
     setTimeout(async () => {
@@ -311,30 +297,7 @@ client.on('interactionCreate', async (interaction) => {
     }, 5000);
   }
 
-  if (interaction.isButton() && interaction.customId === 'configurar_temp_voice') {
-    const modal = new ModalBuilder().setCustomId('modal_config_voice').setTitle('Configurar canal de voz');
-    const inputNombre = new TextInputBuilder().setCustomId('input_nombre').setLabel('Nombre del canal').setStyle(TextInputStyle.Short).setRequired(true);
-    const inputLimite = new TextInputBuilder().setCustomId('input_limite').setLabel('Límite de usuarios (0-100)').setStyle(TextInputStyle.Short).setRequired(false);
-
-    modal.addComponents(new ActionRowBuilder().addComponents(inputNombre), new ActionRowBuilder().addComponents(inputLimite));
-    await interaction.showModal(modal);
-  }
-
-  if (interaction.isModalSubmit() && interaction.customId === 'modal_config_voice') {
-    const nuevoNombre = interaction.fields.getTextInputValue('input_nombre');
-    const limiteStr = interaction.fields.getTextInputValue('input_limite') || '0';
-    let limite = parseInt(limiteStr, 10);
-    if (isNaN(limite) || limite < 0) limite = 0;
-    if (limite > 100) limite = 100;
-
-    const channel = interaction.channel;
-    if (channel && tempChannels.has(channel.id)) {
-      await channel.setName(nuevoNombre);
-      await channel.setUserLimit(limite);
-      await interaction.reply({ content: `✅ Canal actualizado a **${nuevoNombre}** (${limite === 0 ? 'Sin límite' : limite + ' slots'})`, ephemeral: true });
-    }
-  }
-
+  // 3. COMANDO /ANUNCIO
   if (interaction.isChatInputCommand() && interaction.commandName === 'anuncio') {
     const titulo = interaction.options.getString('titulo');
     const mensaje = interaction.options.getString('mensaje').replace(/\\n/g, '\n');
