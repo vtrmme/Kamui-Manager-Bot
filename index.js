@@ -46,11 +46,11 @@ const VOICE_CATEGORY_ID = '1534133235120869416';
 const TICKET_PANEL_CHANNEL_ID = '1534133531876528219';
 
 // ⚠️ REEMPLAZA LOS CÓDIGOS DE ABAJO CON TUS EMOJIS CON ID (Ejemplo: '<:pixel_corazon:123456789012345678>')
-const EMOJI_CORAZON = '<:pixel_corazon:NUMERO_ID>';
-const EMOJI_NO_SPAM = '<:pixel_no_spam:NUMERO_ID>';
-const EMOJI_CANALES = '<:pixel_canales:NUMERO_ID>';
-const EMOJI_SEGURIDAD = '<:pixel_seguridad:NUMERO_ID>';
-const EMOJI_PUERTA = '<:pixel_puerta:NUMERO_ID>';
+const EMOJI_CORAZON = '<:pixel_corazon:1534147758859096084>';
+const EMOJI_NO_SPAM = '<:pixel_no_spam:1534147658938056724>';
+const EMOJI_CANALES = '<:pixel_canales:1534147507049726014>';
+const EMOJI_SEGURIDAD = '<:pixel_seguridad:1534147571210260540>';
+const EMOJI_PUERTA = '<:pixel_puerta:1534150014979543061>';
 
 // Registro de canales de voz temporales
 const tempChannels = new Map();
