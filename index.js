@@ -45,6 +45,13 @@ const VOICE_CREATOR_ID = '1534133390867955823';
 const VOICE_CATEGORY_ID = '1534133235120869416';
 const TICKET_PANEL_CHANNEL_ID = '1534133531876528219';
 
+// ⚠️ REEMPLAZA LOS CÓDIGOS DE ABAJO CON TUS EMOJIS CON ID (Ejemplo: '<:pixel_corazon:123456789012345678>')
+const EMOJI_CORAZON = '<:pixel_corazon:NUMERO_ID>';
+const EMOJI_NO_SPAM = '<:pixel_no_spam:NUMERO_ID>';
+const EMOJI_CANALES = '<:pixel_canales:NUMERO_ID>';
+const EMOJI_SEGURIDAD = '<:pixel_seguridad:NUMERO_ID>';
+const EMOJI_PUERTA = '<:pixel_puerta:NUMERO_ID>';
+
 // Registro de canales de voz temporales
 const tempChannels = new Map();
 
@@ -73,7 +80,7 @@ client.once('ready', async () => {
     console.error('Error al registrar comandos:', err);
   }
 
-  // Desplegar mensajes automáticos al iniciar
+  // Desplegar paneles si no existen
   await setupRulesPanel();
   await setupTicketPanel();
 });
@@ -94,19 +101,19 @@ async function setupRulesPanel() {
     .setDescription('¡Bienvenido/a a **GAMEX COMMUNITY**! Para mantener una gran convivencia, te pedimos cumplir las siguientes normas:\n\n⠀')
     .addFields(
       {
-        name: ':pixel_corazon: 1. Respeto y Convivencia',
+        name: `${EMOJI_CORAZON} 1. Respeto y Convivencia`,
         value: '• Trata a todos los miembros con educación y respeto.\n• No se tolera el acoso, los insultos, las faltas de respeto ni la discriminación.\n⠀',
       },
       {
-        name: ':pixel_no_spam: 2. Spam y Publicidad',
+        name: `${EMOJI_NO_SPAM} 2. Spam y Publicidad`,
         value: '• Queda prohibido enviar enlaces a otros servidores o publicidad no autorizada.\n• Evita el spam y menciones innecesarias.\n⠀',
       },
       {
-        name: ':pixel_canales: 3. Uso Correcto de Canales',
+        name: `${EMOJI_CANALES} 3. Uso Correcto de Canales`,
         value: '• Respeta la temática de cada canal.\n• Revisa la descripción de los canales antes de escribir.\n⠀',
       },
       {
-        name: ':pixel_seguridad: 4. Normativa y Seguridad',
+        name: `${EMOJI_SEGURIDAD} 4. Normativa y Seguridad`,
         value: '• Cumple con los Términos de Servicio de Discord.\n• Prohibido el contenido NSFW o explícito.\n⠀',
       }
     )
@@ -132,7 +139,7 @@ async function setupTicketPanel() {
     .setTitle('🎫 Centro de Soporte — GAMEX COMMUNITY')
     .setDescription(
       '¿Necesitas ayuda del equipo o quieres realizar una consulta privada?\n\n' +
-      ':pixel_corazon: Selecciona la opción adecuada en el menú desplegable para abrir un **ticket privado**.'
+      `${EMOJI_CORAZON} Selecciona la opción adecuada en el menú desplegable para abrir un **ticket privado**.`
     )
     .setFooter({ text: 'gαмєх 🅱🅾🆃 • Por favor, sé paciente tras abrir tu ticket.' });
 
@@ -173,7 +180,7 @@ client.on('guildMemberAdd', async (member) => {
 
   const embedBienvenida = new EmbedBuilder()
     .setColor('#5865F2')
-    .setTitle(`:pixel_puerta: ¡Bienvenido/a a GAMEX COMMUNITY, ${member.user.username}!`)
+    .setTitle(`${EMOJI_PUERTA} ¡Bienvenido/a a GAMEX COMMUNITY, ${member.user.username}!`)
     .setDescription(
       `¡Hola ${member}! Nos alegra mucho tenerte en la comunidad.\n\n` +
       `📌 **Pasos importantes:**\n` +
@@ -190,7 +197,6 @@ client.on('guildMemberAdd', async (member) => {
 
 // --- CANALES DE VOZ TEMPORALES ---
 client.on('voiceStateUpdate', async (oldState, newState) => {
-  // Entra al canal creador
   if (newState.channelId === VOICE_CREATOR_ID) {
     const guild = newState.guild;
     const member = newState.member;
@@ -225,7 +231,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     }
   }
 
-  // Eliminar si queda vacío
   if (oldState.channelId && tempChannels.has(oldState.channelId)) {
     const oldChannel = oldState.guild.channels.cache.get(oldState.channelId);
     if (oldChannel && oldChannel.members.size === 0) {
@@ -238,7 +243,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 // --- INTERACCIONES ---
 client.on('interactionCreate', async (interaction) => {
   
-  // 1. SELECCIÓN DE TICKET
   if (interaction.isStringSelectMenu() && interaction.customId === 'menu_tickets') {
     const tipo = interaction.values[0];
     const guild = interaction.guild;
@@ -300,7 +304,6 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
-  // 2. CERRAR TICKET
   if (interaction.isButton() && interaction.customId === 'cerrar_ticket') {
     await interaction.reply('🔒 El ticket se cerrará y eliminará en **5 segundos**...');
     setTimeout(async () => {
@@ -308,7 +311,6 @@ client.on('interactionCreate', async (interaction) => {
     }, 5000);
   }
 
-  // 3. CONFIGURAR CANAL DE VOZ TEMPORAL
   if (interaction.isButton() && interaction.customId === 'configurar_temp_voice') {
     const modal = new ModalBuilder().setCustomId('modal_config_voice').setTitle('Configurar canal de voz');
     const inputNombre = new TextInputBuilder().setCustomId('input_nombre').setLabel('Nombre del canal').setStyle(TextInputStyle.Short).setRequired(true);
@@ -333,7 +335,6 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
-  // 4. COMANDO /ANUNCIO
   if (interaction.isChatInputCommand() && interaction.commandName === 'anuncio') {
     const titulo = interaction.options.getString('titulo');
     const mensaje = interaction.options.getString('mensaje').replace(/\\n/g, '\n');
