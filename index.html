@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient Glow Background */
         .glow {
             position: absolute;
             width: 400px;
@@ -43,7 +42,6 @@
             pointer-events: none;
         }
 
-        /* Navigation */
         nav {
             display: flex;
             justify-content: space-between;
@@ -98,7 +96,6 @@
             color: var(--text-main);
         }
 
-        /* Hero Section */
         .hero {
             text-align: center;
             padding: 80px 20px 60px;
@@ -174,7 +171,6 @@
             transform: translateY(-2px);
         }
 
-        /* Features Section */
         .features {
             padding: 80px 10%;
             max-width: 1200px;
@@ -222,7 +218,6 @@
             font-size: 0.95rem;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -259,10 +254,12 @@
         <h1>Lleva tu servidor al siguiente nivel</h1>
         <p>GAMEX es un bot multifuncional de Discord diseñado para mejorar la interacción, entretenimiento y gestión dentro de tu comunidad.</p>
         <div class="cta-buttons">
-            <a href="https://discord.com/oauth2/authorize?client_id=1534131252729221269&permissions=8&integration_type=0&scope=bot+applications.commands" target="_blank" class="btn btn-primary">
+            <!-- Botón directo a la invitación de Discord -->
+            <a href="https://discord.com/oauth2/authorize?client_id=1534131252729221269&permissions=8&integration_type=0&scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
                 <i class="fa-brands fa-discord"></i> Añadir a Discord
             </a>
-            <a href="https://github.com/vtrmme/GAMEX-BOT" target="_blank" class="btn btn-secondary">
+            <!-- Botón directo a GitHub -->
+            <a href="https://github.com/vtrmme/GAMEX-BOT" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
                 <i class="fa-brands fa-github"></i> Código Fuente
             </a>
         </div>
