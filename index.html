@@ -57,17 +57,28 @@
             z-index: 100;
         }
 
-        .logo {
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo-text {
             font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: 1px;
             color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .logo span {
+        .logo-text span {
             color: var(--accent-neon);
         }
 
@@ -90,22 +101,25 @@
         /* Hero Section */
         .hero {
             text-align: center;
-            padding: 100px 20px 60px;
+            padding: 80px 20px 60px;
             max-width: 800px;
             margin: 0 auto;
         }
 
-        .hero-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-neon));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .hero-avatar-container {
+            width: 130px;
+            height: 130px;
             margin: 0 auto 25px;
-            font-size: 3rem;
-            box-shadow: 0 0 30px rgba(162, 89, 255, 0.3);
+            position: relative;
+        }
+
+        .hero-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-neon);
+            box-shadow: 0 0 30px rgba(162, 89, 255, 0.4);
         }
 
         .hero h1 {
@@ -188,7 +202,6 @@
         }
 
         .card:hover {
-            transform: translateY(-50px);
             transform: translateY(-5px);
             border-color: var(--accent-neon);
         }
@@ -229,9 +242,10 @@
     <div class="glow"></div>
 
     <nav>
-        <div class="logo">
-            <i class="fa-solid fa-gamepad"></i> GAMEX<span>.</span>
-        </div>
+        <a href="#" class="logo-container">
+            <img src="logo.png" alt="GAMEX Logo" class="nav-logo-img">
+            <div class="logo-text">GAMEX<span>.</span></div>
+        </a>
         <ul class="nav-links">
             <li><a href="#features">Características</a></li>
             <li><a href="https://github.com/vtrmme/GAMEX-BOT" target="_blank">GitHub</a></li>
@@ -239,13 +253,13 @@
     </nav>
 
     <header class="hero">
-        <div class="hero-avatar">
-            <i class="fa-solid fa-robot"></i>
+        <div class="hero-avatar-container">
+            <img src="logo.png" alt="GAMEX Bot Avatar" class="hero-avatar">
         </div>
         <h1>Lleva tu servidor al siguiente nivel</h1>
         <p>GAMEX es un bot multifuncional de Discord diseñado para mejorar la interacción, entretenimiento y gestión dentro de tu comunidad.</p>
         <div class="cta-buttons">
-            <a href="https://github.com/vtrmme/GAMEX-BOT" target="_blank" class="btn btn-primary">
+            <a href="https://discord.com/oauth2/authorize?client_id=1534131252729221269&permissions=8&integration_type=0&scope=bot+applications.commands" target="_blank" class="btn btn-primary">
                 <i class="fa-brands fa-discord"></i> Añadir a Discord
             </a>
             <a href="https://github.com/vtrmme/GAMEX-BOT" target="_blank" class="btn btn-secondary">
